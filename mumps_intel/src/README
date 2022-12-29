@@ -1,0 +1,4 @@
+It is working:
+- MUMPS
+- Pardiso (Intel MKL version)
+- LU (of MKL library) for full matrices.
