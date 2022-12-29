@@ -1,0 +1,32 @@
+# template for Linux machine with MKL (MUMPS was compiled using ifort an MKL)
+# Created          : 15/07/2017
+# Last modification: 28/12/2022
+
+FC = ifort
+LD = ifort
+
+INTEL=$(HOME)/intel/oneapi
+IMKL= $(INTEL)/mkl/latest/include
+LIBMKL=$(INTEL)/mkl/latest/lib
+MKLROOT=$(INTEL)/mkl/latest
+OPT=   -i8  -I"${MKLROOT}/include"
+
+LIBSMKL=  -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a \
+	${MKLROOT}/lib/intel64/libmkl_intel_thread.a \
+	${MKLROOT}/lib/intel64/libmkl_core.a \
+	-Wl,--end-group -liomp5 -lpthread -lm -ldl
+
+FFLAGS = $(OPT) -I$(IMKL)
+LDFLAGS = $(OPT) $(LIBSMKL)
+LIST = -listing
+
+OPTL= -O -nofor-main -qopenmp
+LIBMUMPS = $(HOME)/lib/MUMPS/5.5.1
+LIBSMUMPS = -L$(LIBMUMPS)/lib -ldmumps -lmumps_common \
+	  -L$(LIBMUMPS)/PORD/lib -lpord \
+	  -L$(LIBSCOTCH) -lesmumps -lscotch -lscotcherr \
+	  -L$(LIBMUMPS)/libseq -lmpiseq \
+	  -L$(LIBMKL)/intel64 -lmkl_intel_lp64 -lmkl_intel_thread \
+	  -lmkl_core -lpthread
+IMUMPS = $(LIBMUMPS)/include
+LIBSCOTCH = $(HOME)/lib/scotch/7.0.2/lib
